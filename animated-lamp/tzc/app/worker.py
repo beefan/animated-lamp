@@ -1,5 +1,6 @@
 from celery import Celery
 from .celery_config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
+from .persona_service import seed_personas
 
 celery_app = Celery(
     "worker",
@@ -14,3 +15,10 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
 )
+
+@celery_app.task(name="generate_personas_task")
+def generate_personas_task():
+    """
+    Celery task to generate personas.
+    """
+    return seed_personas()
