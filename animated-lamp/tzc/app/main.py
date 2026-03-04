@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .models import engine, Base
+from .models import engine, Base, SessionLocal
 
 Base.metadata.create_all(bind=engine)
 
