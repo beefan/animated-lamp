@@ -12,7 +12,7 @@ def db_session():
         SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
     )
     
-    from sqlalchemy import event
+    from sqlalchemy import event, text
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
@@ -30,9 +30,10 @@ def db_session():
     Base.metadata.drop_all(bind=engine)
 
 def test_sqlite_wal_mode(db_session):
-    result = db_session.execute("PRAGMA journal_mode").fetchone()
+    from sqlalchemy import text
+    result = db_session.execute(text("PRAGMA journal_mode")).fetchone()
     assert result[0].lower() == "wal"
-    result = db_session.execute("PRAGMA synchronous").fetchone()
+    result = db_session.execute(text("PRAGMA synchronous")).fetchone()
     # 1 is NORMAL, 2 is FULL
     assert result[0] == 1
 
