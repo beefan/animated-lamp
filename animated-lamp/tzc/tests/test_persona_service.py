@@ -12,9 +12,8 @@ from app.models import Persona
 class TestPersonaService(unittest.TestCase):
 
     @patch('requests.post')
-    @patch('os.getenv')
-    def test_generate_personas_with_gemini(self, mock_getenv, mock_post):
-        mock_getenv.return_value = "fake-api-key"
+    @patch('app.persona_service.GEMINI_API_KEY', 'fake-api-key')
+    def test_generate_personas_with_gemini(self, mock_post):
         
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -35,8 +34,8 @@ class TestPersonaService(unittest.TestCase):
         self.assertEqual(personas[0]['name'], "John Doe")
         mock_post.assert_called_once()
 
-    @patch('code.animated_lamp.animated_lamp.tzc.app.persona_service.generate_personas_with_gemini')
-    @patch('code.animated_lamp.animated_lamp.tzc.app.persona_service.SessionLocal')
+    @patch('app.persona_service.generate_personas_with_gemini')
+    @patch('app.persona_service.SessionLocal')
     def test_seed_personas(self, mock_session_local, mock_generate):
         mock_db = MagicMock()
         mock_session_local.return_value = mock_db
